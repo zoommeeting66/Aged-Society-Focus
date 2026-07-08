@@ -1,0 +1,570 @@
+```html
+<!DOCTYPE html>
+<html lang="th" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Healthcare Demand & Local University Pivot Forecast Dashboard (2570-2575)</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Google Fonts: Sarabun & Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Health Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', 'Sarabun', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen antialiased flex flex-col justify-between">
+
+    <header class="border-b border-slate-850 bg-slate-900/90 backdrop-blur sticky top-0 z-50 px-6 py-4">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+                <div class="flex items-center gap-2">
+                    <span class="bg-indigo-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Super-Aged Society Focus</span>
+                    <span class="text-slate-400 text-xs">พยากรณ์กำลังคนสาธารณสุข & ทิศทางสถาบันอุดมศึกษาท้องถิ่น</span>
+                </div>
+                <h1 class="text-xl md:text-2xl font-bold tracking-tight text-white mt-1">
+                    แดชบอร์ดคาดการณ์ความต้องการแพทย์เฉพาะทาง & พยาบาลวิชาชีพ (๒๕๗๐ - ๒๕๗๕)
+                </h1>
+            </div>
+            <div class="text-xs text-slate-400 text-left md:text-right">
+                <p>อ้างอิงข้อมูลพื้นฐานความเปราะบาง: <span class="text-amber-400 font-semibold">image_a07dfe.jpg</span> (Rocket Media Lab & สสส.)</p>
+                <p class="font-medium text-indigo-400 mt-1">โมเดลจำลองการเปลี่ยนผ่านหลักสูตรมหาวิทยาลัยท้องถิ่น</p>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto p-4 md:p-6 w-full space-y-6 flex-grow">
+        
+        <!-- Summary Dashboard Widgets -->
+        <section class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 shadow-lg flex items-center gap-4">
+                <div class="p-3 rounded-lg bg-rose-500/10 text-rose-400">
+                    <i class="fa-solid fa-user-doctor text-2xl"></i>
+                </div>
+                <div>
+                    <p class="text-xs text-slate-400">แพทย์วิกฤตสูงสุด</p>
+                    <p class="text-lg font-bold text-rose-400">อายุรศาสตร์ (Internal Med)</p>
+                    <p class="text-[10px] text-slate-500">สูงวัยต่ออายุรแพทย์สูงเฉลี่ย 5,000+:1</p>
+                </div>
+            </div>
+            <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 shadow-lg flex items-center gap-4">
+                <div class="p-3 rounded-lg bg-teal-500/10 text-teal-400">
+                    <i class="fa-solid fa-user-nurse text-2xl"></i>
+                </div>
+                <div>
+                    <p class="text-xs text-slate-400">พยาบาลขาดแคลนสะสม</p>
+                    <p class="text-lg font-bold text-teal-400">เวชปฏิบัติผู้สูงอายุ</p>
+                    <p class="text-[10px] text-slate-500">ความต้องการเติบโตปีละ 8.2%</p>
+                </div>
+            </div>
+            <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 shadow-lg flex items-center gap-4">
+                <div class="p-3 rounded-lg bg-amber-500/10 text-amber-400">
+                    <i class="fa-solid fa-hospital-user text-2xl"></i>
+                </div>
+                <div>
+                    <p class="text-xs text-slate-400">จ. ขาดแคลนพยาบาลอันดับ 1</p>
+                    <p class="text-lg font-bold text-amber-400">กำแพงเพชร</p>
+                    <p class="text-[10px] text-slate-500">สูงวัยต่อพยาบาล 156.42 : 1 คน</p>
+                </div>
+            </div>
+            <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 shadow-lg flex items-center gap-4">
+                <div class="p-3 rounded-lg bg-indigo-500/10 text-indigo-400">
+                    <i class="fa-solid fa-graduation-cap text-2xl"></i>
+                </div>
+                <div>
+                    <p class="text-xs text-slate-400">ทิศทางมหาวิทยาลัยท้องถิ่น</p>
+                    <p class="text-lg font-bold text-indigo-400">Pivot to Health & Care</p>
+                    <p class="text-[10px] text-slate-500">เปลี่ยนเก้าอี้สังคมศาสตร์เป็นวิชาชีพ</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            
+            <!-- Dynamic Parameter Controller -->
+            <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-xl space-y-6 flex flex-col justify-between">
+                <div>
+                    <h3 class="text-sm font-semibold text-white mb-4 flex items-center gap-2 border-b border-slate-800 pb-2">
+                        <i class="fa-solid fa-sliders text-indigo-400"></i>
+                        เครื่องมือแบบจำลองและพยากรณ์
+                    </h3>
+
+                    <!-- Target Province Selection (Loaded from image_a07dfe.jpg) -->
+                    <div class="space-y-2 mb-4">
+                        <label class="text-xs text-slate-300 font-medium block">1. เลือกจังหวัดเป้าหมายเพื่อวิเคราะห์ช่องว่างสะสม</label>
+                        <select id="province-select" onchange="changeProvince(this.value)" class="w-full bg-slate-950 border border-slate-800 rounded-lg text-sm p-2 text-slate-200 focus:outline-none focus:border-indigo-500">
+                            <option value="KamphaengPhet">กำแพงเพชร (วิกฤตพยาบาลและเตียงอันดับ 1)</option>
+                            <option value="BuengKan">บึงกาฬ (วิกฤตอายุรแพทย์อันดับ 1)</option>
+                            <option value="Phetchabun">เพชรบูรณ์ (วิกฤตสูงทุกด้านอันดับ 2-4)</option>
+                            <option value="Sukhothai">สุโขทัย (วิกฤตสัดส่วนพยาบาล/เตียงอันดับ 3)</option>
+                            <option value="NongBua">หนองบัวลำภู (วิกฤตสัดส่วนพยาบาลอันดับ 2)</option>
+                        </select>
+                    </div>
+
+                    <!-- Aging Growth Scenario -->
+                    <div class="space-y-2 mb-4">
+                        <label class="text-xs text-slate-300 font-medium block">2. ฉากทัศน์อัตราการเติบโตประชากรสูงอายุ (ปี 2570-2575)</label>
+                        <div class="grid grid-cols-3 gap-2">
+                            <button id="sc-normal" onclick="setScenario('normal')" class="py-2 px-2 rounded-lg text-[11px] font-semibold text-center border bg-indigo-950/40 border-indigo-500 text-indigo-300 transition-all">
+                                โตปกติ (+4%/ปี)
+                            </button>
+                            <button id="sc-fast" onclick="setScenario('fast')" class="py-2 px-2 rounded-lg text-[11px] font-semibold text-center border bg-slate-800/40 border-slate-700 text-slate-400 transition-all">
+                                สังคมสูงวัยเร่งด่วน (+6%/ปี)
+                            </button>
+                            <button id="sc-extreme" onclick="setScenario('extreme')" class="py-2 px-2 rounded-lg text-[11px] font-semibold text-center border bg-slate-800/40 border-slate-700 text-slate-400 transition-all">
+                                ขั้นสุดยอดวิกฤต (+8%/ปี)
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Target Standard Adjuster Slider -->
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center">
+                            <label class="text-xs text-slate-300 font-medium">3. สัดส่วนเป้าหมายผู้สูงอายุต่อพยาบาล 1 คน</label>
+                            <span id="target-nurse-val" class="text-xs font-bold text-teal-400 bg-teal-950/50 px-2 py-0.5 rounded border border-teal-800/50">80:1 คน</span>
+                        </div>
+                        <input id="target-nurse-slider" type="range" min="50" max="120" value="80" oninput="updateTargetNurse(this.value)" class="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-teal-500">
+                        <div class="flex justify-between text-[9px] text-slate-500">
+                            <span>มาตรฐานสากลสูง (50:1)</span>
+                            <span>เป้าหมายขยับตามจริง (80:1)</span>
+                            <span>ขั้นต่ำสุดวิกฤต (120:1)</span>
+                        </div>
+                        <p class="text-[10px] text-slate-400 leading-relaxed pt-1">
+                            *เพื่อลดระดับความตึงตัวในระบบสาธารณสุขของจังหวัด สถาบันอุดมศึกษาจำเป็นต้องตั้งเป้าพัฒนาบัณฑิตพยาบาลทดแทนให้ได้สัดส่วนตามที่กำหนด
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Real-time Gap Calculation Box -->
+                <div class="bg-slate-950/80 rounded-lg p-3.5 border border-slate-850 space-y-2 mt-4 lg:mt-0">
+                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">ประมาณการขีดความต้องการสะสม (ปี 2570-2575)</p>
+                    <div class="flex justify-between items-center text-xs">
+                        <span class="text-slate-400">ความต้องการอายุรแพทย์ใหม่สะสม:</span>
+                        <span id="calc-doctor-gap" class="font-bold text-rose-400 text-sm">-- คน</span>
+                    </div>
+                    <div class="flex justify-between items-center text-xs">
+                        <span class="text-slate-400">ความต้องการพยาบาลวิชาชีพใหม่สะสม:</span>
+                        <span id="calc-nurse-gap" class="font-bold text-teal-400 text-sm">-- คน</span>
+                    </div>
+                    <div class="flex justify-between items-center text-xs border-t border-slate-800 pt-1.5">
+                        <span class="text-slate-400">อัตราผลิตขั้นต่ำของ ม. ท้องถิ่น:</span>
+                        <span id="calc-university-target" class="font-bold text-indigo-400 text-sm">-- คน/รุ่น</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Visual Charts Container -->
+            <div class="lg:col-span-2 bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-xl space-y-4">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-slate-800 pb-2 gap-2">
+                    <div class="flex border-slate-800 gap-1">
+                        <button id="tab-demand" onclick="switchChartTab('demand')" class="text-xs font-semibold border-b-2 border-indigo-500 text-indigo-400 pb-2 px-3 transition-all">
+                            พยากรณ์ความต้องการ (2570-2575)
+                        </button>
+                        <button id="tab-specialties" onclick="switchChartTab('specialties')" class="text-xs font-semibold text-slate-400 pb-2 px-3 hover:text-white transition-all">
+                            จัดอันดับสาขาแพทย์ & พยาบาลที่ขาดแคลน
+                        </button>
+                    </div>
+                    <span id="chart-province-label" class="bg-slate-950 text-amber-400 border border-slate-800 text-[10px] px-2.5 py-1 rounded font-semibold">
+                        จังหวัด: กำแพงเพชร
+                    </span>
+                </div>
+
+                <!-- Tab 1: Timeline Line Chart -->
+                <div id="chart-timeline-container" class="relative h-[300px] md:h-[350px] w-full">
+                    <canvas id="demandLineChart"></canvas>
+                </div>
+
+                <!-- Tab 2: Specialty Bar Chart -->
+                <div id="chart-specialties-container" class="hidden relative h-[300px] md:h-[350px] w-full">
+                    <canvas id="specialtyBarChart"></canvas>
+                </div>
+            </div>
+
+        </section>
+
+        <section class="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-xl space-y-6">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-slate-800 pb-4 gap-2">
+                <div>
+                    <h3 class="text-base font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-map-location-dot text-emerald-400"></i>
+                        แผนปรับยุทธศาสตร์มหาวิทยาลัยในท้องถิ่น (Local University Pivot Strategies)
+                    </h3>
+                    <p class="text-xs text-slate-400 mt-1">โมเดลจำลองแผนการปรับอัตราการรับนักศึกษาและจัดตั้งหลักสูตรเป้าหมายเพื่อตอบสนองวิกฤตในพื้นที่จริง</p>
+                </div>
+                <span class="text-xs text-slate-300 font-medium">
+                    เครือข่ายความร่วมมือ: <span class="text-emerald-400">สสส. + รพ.ศูนย์ประจำจังหวัด + อบจ.</span>
+                </span>
+            </div>
+
+            <!-- Responsive Pivot Matrix Table -->
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="border-b border-slate-800 text-xs text-slate-400 uppercase font-medium">
+                            <th class="py-3 px-4">มิติกลยุทธ์ (Strategic Dimension)</th>
+                            <th class="py-3 px-4">แผนเดิมที่เคยทำ (Traditional Model)</th>
+                            <th class="py-3 px-4 text-emerald-400">แผนปรับตัวใหม่ 2570-2575 (Healthcare Pivot Model)</th>
+                            <th class="py-3 px-4 text-right">สัดส่วนพื้นที่/การจัดตั้งหลักสูตรแนะนำ</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-xs text-slate-300 divide-y divide-slate-800/50">
+                        <tr class="hover:bg-slate-900/50 transition-colors">
+                            <td class="py-3 px-4 font-semibold text-white">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                                    1. การจัดสรรโควตาที่นั่งนักศึกษา (Seat Re-allocation)
+                                </div>
+                            </td>
+                            <td class="py-3 px-4 text-slate-400">เน้นรับสายสังคมศาสตร์ นิติศาสตร์ บริหารธุรกิจ และครุศาสตร์ เนื่องจากค่าใช้จ่ายจัดตั้งต่ำ</td>
+                            <td class="py-3 px-4 text-emerald-300 font-medium bg-emerald-950/10">ลดสัดส่วนคณะทั่วไปลง 30% ย้ายงบอุดหนุนรายหัวไปจัดตั้ง "คณะพยาบาลศาสตร์" และ "โรงเรียนผู้ดูแลผู้สูงอายุ (Geriatric Caregiver)" ร่วมกับโรงพยาบาลท้องถิ่น</td>
+                            <td class="py-3 px-4 text-right text-slate-400">มรภ.กำแพงเพชร, มรภ.เพชรบูรณ์ (จัดตั้ง/ขยายโควตาพยาบาลเพิ่ม 50-80 ที่นั่ง/ปี)</td>
+                        </tr>
+                        <tr class="hover:bg-slate-900/50 transition-colors">
+                            <td class="py-3 px-4 font-semibold text-white">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+                                    2. หลักสูตรร่วมกับ รพ. ท้องถิ่น (Sandboxed Curriculum)
+                                </div>
+                            </td>
+                            <td class="py-3 px-4 text-slate-400">นักศึกษาต้องส่งตัวฝึกงานในกรุงเทพฯ หรือโรงพยาบาลศูนย์ขนาดใหญ่นอกเขตจังหวัด</td>
+                            <td class="py-3 px-4 text-emerald-300 font-medium bg-emerald-950/10">จัดทำ Sandbox ร่วมกับ "โรงพยาบาลทั่วไปประจำจังหวัด" (เช่น รพ.บึงกาฬ, รพ.พิติต) เรียนทฤษฎีใน ม. ท้องถิ่น 2 ปี และฝึกทักษะคลินิกเชิงรุกในโรงพยาบาลชุมชน 2 ปีเต็ม เพื่อผูกพันสัญญาคืนถิ่น</td>
+                            <td class="py-3 px-4 text-right text-slate-400">มรภ.อุดรธานี (บึงกาฬโมเดล), ม.นเรศวร (เครือข่ายเหนือตอนล่าง)</td>
+                        </tr>
+                        <tr class="hover:bg-slate-900/50 transition-colors">
+                            <td class="py-3 px-4 font-semibold text-white">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full bg-teal-500"></span>
+                                    3. การอัปสกิลอาสาสมัคร (Community Health Lifelong Learning)
+                                </div>
+                            </td>
+                            <td class="py-3 px-4 text-slate-400">ไม่เน้นกลุ่มนอกระบบ มุ่งเน้นรับสมัครผู้จบ ม.6 แข่งสอบระบบ TCAS ตามมาตรฐานเดิม</td>
+                            <td class="py-3 px-4 text-emerald-300 font-medium bg-emerald-950/10">เปิดหลักสูตรระยะสั้น (6 เดือน - 1 ปี) อัปสกิลกลุ่ม "อสม. ท้องถิ่น" และประชากรวัยกลางคน ให้ได้รับ "ประกาศนียบัตรผู้บริบาลและดูแลผู้สูงอายุ" สะสมหน่วยกิตเข้าสู่ปริญญาบัตร (Credit Bank)</td>
+                            <td class="py-3 px-4 text-right text-slate-400">มหาวิทยาลัยราชภัฏทุกแห่ง ในเขตพื้นที่ภาคเหนือ/อีสานตอนบน</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Detailed Context Note -->
+            <div class="bg-emerald-950/10 border border-emerald-900/40 rounded-lg p-4 flex items-start gap-3">
+                <span class="text-emerald-400 text-lg"><i class="fa-solid fa-lightbulb"></i></span>
+                <div class="text-xs text-slate-400 leading-relaxed">
+                    <strong class="text-emerald-300">วิเคราะห์ทิศทางสถาบันอุดมศึกษาท้องถิ่น:</strong> 
+                    วิกฤตความเปราะบางของจังหวัด เช่น <strong class="text-white">กำแพงเพชร หนองบัวลำภู และบึงกาฬ</strong> แท้จริงแล้วเป็น <strong class="text-amber-300">"โอกาสใหม่"</strong> ของมหาวิทยาลัยประจำถิ่น ในขณะที่กลุ่มสาขาเดิมเจอกับสภาวะหน้าผาประชากรเด็กเกิดใหม่ลดลงอย่างรุนแรง การ Pivot ไปสู่การเป็นแหล่งเรียนรู้และซัพพลายกำลังคนด้านสาธารณสุขและดูแลผู้สูงอายุ จะเป็นเครื่องช่วยชีวิตสถาบันให้รอดพ้นจากการยุบสาขา และสามารถดึงดูดงบประมาณพัฒนาท้องถิ่นจาก อบจ. รวมถึงงบกระตุ้นของกระทรวงสาธารณสุขได้โดยตรง
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="border-t border-slate-900 bg-slate-950 py-4 px-6 text-center text-xs text-slate-500">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-2">
+            <p>© 2569 Thailand Healthcare & University Pivot Simulation Model v1.0</p>
+            <p>ร่วมพัฒนาข้อมูลโดย AI & โครงสร้างข้อมูลความเปราะบางระบบ สสส.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Core Database mapped from the image_a07dfe.jpg (Vulnerable Provinces Dataset)
+        const provinceDatabase = {
+            KamphaengPhet: {
+                name: "กำแพงเพชร",
+                elderlyCount: 168000, // Estimated current elderly population
+                currentInternistRatio: 7647.37, // elderly per internist
+                currentNurseRatio: 156.42, // elderly per nurse
+                currentBedRatio: 196.27, // elderly per bed
+                vulnerabilityLevel: "วิกฤตด้านพยาบาลและเตียงผู้ป่วยอันดับ 1",
+                keySpecialties: ["อายุรศาสตร์ประชากรสูงอายุ", "พยาบาลเวชปฏิบัติชุมชน", "พยาบาลกายภาพบำบัด & ฟื้นฟู"]
+            },
+            BuengKan: {
+                name: "บึงกาฬ",
+                elderlyCount: 82000,
+                currentInternistRatio: 11771.43, // HIGHEST Internist deficit
+                currentNurseRatio: 112.88,
+                currentBedRatio: 118.56,
+                vulnerabilityLevel: "วิกฤตขาดแคลนอายุรแพทย์มากที่สุดในประเทศ (11,771:1)",
+                keySpecialties: ["อายุรศาสตร์ทั่วไป (Geriatric Focus)", "เวชศาสตร์ครอบครัวเชิงรุก", "พยาบาลฉุกเฉินและส่งต่อ"]
+            },
+            Phetchabun: {
+                name: "เพชรบูรณ์",
+                elderlyCount: 215000,
+                currentInternistRatio: 8421.82,
+                currentNurseRatio: 135.37,
+                currentBedRatio: 143.70,
+                vulnerabilityLevel: "เปราะบางสะสมสูงทุกมิติ (อันดับ 2 ด้านอายุรแพทย์ และอันดับ 4 ด้านเตียง)",
+                keySpecialties: ["อายุรศาสตร์โรคเรื้อรัง", "พยาบาลประคับประคอง (Palliative Care)", "ผู้บริบาลทางเลือกสัญจร"]
+            },
+            Sukhothai: {
+                name: "สุโขทัย",
+                elderlyCount: 138000,
+                currentInternistRatio: 4850.00, // Estimated based on regional trend
+                currentNurseRatio: 143.04,
+                currentBedRatio: 145.51,
+                vulnerabilityLevel: "วิกฤตสัดส่วนพยาบาลและเตียงผู้ป่วยอันดับ 3 ของประเทศ",
+                keySpecialties: ["พยาบาลเวชปฏิบัติทั่วไป", "การฟื้นฟูสุขภาพชุมชนระดับปฐมภูมิ", "ผู้ช่วยพยาบาลสิทธิบัตรท้องถิ่น"]
+            },
+            NongBua: {
+                name: "หนองบัวลำภู",
+                elderlyCount: 96000,
+                currentInternistRatio: 5723.16,
+                currentNurseRatio: 146.16,
+                currentBedRatio: 152.72,
+                vulnerabilityLevel: "สัดส่วนพยาบาลขาดแคลนวิกฤตอันดับ 2 และขาดแคลนเตียงระดับสูง",
+                keySpecialties: ["พยาบาลสุขภาพจิตผู้สูงอายุ", "เวชศาสตร์ปฐมภูมิอิงครอบครัว", "การแพทย์ทางเลือกผสมผสาน"]
+            }
+        };
+
+        const years = ["2570", "2571", "2572", "2573", "2574", "2575"];
+        
+        // Active App States
+        let currentProvince = "KamphaengPhet";
+        let currentScenario = "normal"; // normal, fast, extreme
+        let targetNurseRatio = 80; // target ratio of elderly to 1 nurse
+        
+        let demandLineChart = null;
+        let specialtyBarChart = null;
+
+        // Initialize Application on Window Load
+        window.onload = function() {
+            initCharts();
+            recalculateMetrics();
+        };
+
+        // Switch Scenario Handle
+        function setScenario(scenario) {
+            currentScenario = scenario;
+            
+            // Toggle Scenario Button Styles
+            ['normal', 'fast', 'extreme'].forEach(sc => {
+                const btn = document.getElementById(`sc-${sc}`);
+                if (sc === scenario) {
+                    btn.className = "py-2 px-2 rounded-lg text-[11px] font-semibold text-center border bg-indigo-950/40 border-indigo-500 text-indigo-300 transition-all";
+                } else {
+                    btn.className = "py-2 px-2 rounded-lg text-[11px] font-semibold text-center border bg-slate-800/40 border-slate-700 text-slate-400 transition-all hover:bg-slate-900/40 hover:border-slate-500";
+                }
+            });
+
+            recalculateMetrics();
+        }
+
+        // Change target province
+        function changeProvince(provinceKey) {
+            currentProvince = provinceKey;
+            document.getElementById('chart-province-label').innerText = `จังหวัด: ${provinceDatabase[provinceKey].name}`;
+            recalculateMetrics();
+        }
+
+        // Handle Nurse Ratio slider adjustment
+        function updateTargetNurse(val) {
+            targetNurseRatio = parseInt(val);
+            document.getElementById('target-nurse-val').innerText = `${val}:1 คน`;
+            recalculateMetrics();
+        }
+
+        function recalculateMetrics() {
+            const data = provinceDatabase[currentProvince];
+            
+            // Growth rate mapping based on scenarios
+            let growthRate = 0.04; // normal (+4% per year)
+            if (currentScenario === "fast") growthRate = 0.06;
+            if (currentScenario === "extreme") growthRate = 0.08;
+
+            // Project elderly population over years (2570 - 2575)
+            let projectedElderly = [];
+            let currentPop = data.elderlyCount;
+            for (let i = 0; i < years.length; i++) {
+                currentPop = Math.round(currentPop * (1 + growthRate));
+                projectedElderly.push(currentPop);
+            }
+
+            // Calculate Required Internists based on standard target ratio of 1:2000 elderly
+            const targetDocRatio = 2000;
+            let projectedNurseDemand = [];
+            let projectedDocDemand = [];
+
+            projectedElderly.forEach(pop => {
+                // Total required doctors & nurses to meet targets
+                const reqDocs = Math.round(pop / targetDocRatio);
+                const reqNurses = Math.round(pop / targetNurseRatio);
+                
+                projectedDocDemand.push(reqDocs);
+                projectedNurseDemand.push(reqNurses);
+            });
+
+            // Calculate Gaps (Deficit accumulate)
+            // Current actual estimates based on image data
+            const currentActualDocs = Math.round(data.elderlyCount / data.currentInternistRatio);
+            const currentActualNurses = Math.round(data.elderlyCount / data.currentNurseRatio);
+
+            const doctorGapAccum = Math.max(0, projectedDocDemand[projectedDocDemand.length - 1] - currentActualDocs);
+            const nurseGapAccum = Math.max(0, projectedNurseDemand[projectedNurseDemand.length - 1] - currentActualNurses);
+            
+            // Annual target production for regional university (assumed to supply 40% of the provincial deficit)
+            const annualUniProductionTarget = Math.round((nurseGapAccum * 0.40) / years.length);
+
+            // Update DOM Elements
+            document.getElementById('calc-doctor-gap').innerText = `+${doctorGapAccum.toLocaleString('th-TH')} คน`;
+            document.getElementById('calc-nurse-gap').innerText = `+${nurseGapAccum.toLocaleString('th-TH')} คน`;
+            document.getElementById('calc-university-target').innerText = `~${annualUniProductionTarget.toLocaleString('th-TH')} คน/รุ่น`;
+
+            // Update Charts
+            updateDemandChart(projectedDocDemand, projectedNurseDemand);
+            updateSpecialtyChart(data.keySpecialties);
+        }
+
+        // Switch View Tab between Line Chart and Specialty Breakdown
+        function switchChartTab(tab) {
+            const demandBtn = document.getElementById('tab-demand');
+            const specialtiesBtn = document.getElementById('tab-specialties');
+            const timelineContainer = document.getElementById('chart-timeline-container');
+            const specialtiesContainer = document.getElementById('chart-specialties-container');
+
+            if (tab === 'demand') {
+                demandBtn.className = "text-xs font-semibold border-b-2 border-indigo-500 text-indigo-400 pb-2 px-3 transition-all";
+                specialtiesBtn.className = "text-xs font-semibold text-slate-400 pb-2 px-3 hover:text-white transition-all";
+                timelineContainer.classList.remove('hidden');
+                specialtiesContainer.classList.add('hidden');
+            } else {
+                specialtiesBtn.className = "text-xs font-semibold border-b-2 border-emerald-500 text-emerald-400 pb-2 px-3 transition-all";
+                demandBtn.className = "text-xs font-semibold text-slate-400 pb-2 px-3 hover:text-white transition-all";
+                timelineContainer.classList.add('hidden');
+                specialtiesContainer.classList.remove('hidden');
+            }
+        }
+
+        function initCharts() {
+            // Line Chart init
+            const ctxTimeline = document.getElementById('demandLineChart').getContext('2d');
+            demandLineChart = new Chart(ctxTimeline, {
+                type: 'line',
+                data: {
+                    labels: years,
+                    datasets: [
+                        {
+                            label: 'ความต้องการพยาบาลวิชาชีพรวมสะสม (คน)',
+                            data: [],
+                            borderColor: '#14b8a6',
+                            backgroundColor: 'rgba(20, 184, 166, 0.1)',
+                            borderWidth: 3,
+                            pointBackgroundColor: '#0f766e',
+                            fill: true,
+                            tension: 0.25,
+                            yAxisID: 'y'
+                        },
+                        {
+                            label: 'ความต้องการอายุรแพทย์รวมสะสม (คน)',
+                            data: [],
+                            borderColor: '#f43f5e',
+                            backgroundColor: 'rgba(244, 63, 94, 0.05)',
+                            borderWidth: 3,
+                            pointBackgroundColor: '#be123c',
+                            borderDash: [4, 4],
+                            fill: true,
+                            tension: 0.25,
+                            yAxisID: 'y1'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: { color: '#94a3b8', font: { family: 'Sarabun', size: 10 } }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            type: 'linear',
+                            display: true,
+                            position: 'left',
+                            grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                            ticks: { color: '#14b8a6', font: { family: 'Sarabun' } },
+                            title: { display: true, text: 'พยาบาล (คน)', color: '#14b8a6', font: { size: 10 } }
+                        },
+                        y1: {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            grid: { drawOnChartArea: false }, // avoid overlapping gridlines
+                            ticks: { color: '#f43f5e', font: { family: 'Sarabun' } },
+                            title: { display: true, text: 'อายุรแพทย์ (คน)', color: '#f43f5e', font: { size: 10 } }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { color: '#94a3b8', font: { family: 'Sarabun' } }
+                        }
+                    }
+                }
+            });
+
+            // Bar Chart Init for Specialties Importance Ranking
+            const ctxSpecialty = document.getElementById('specialtyBarChart').getContext('2d');
+            specialtyBarChart = new Chart(ctxSpecialty, {
+                type: 'bar',
+                data: {
+                    labels: [], // Will load dynamically based on province
+                    datasets: [{
+                        label: 'คะแนนดัชนีความสำคัญหลักสูตรที่ต้องเปิดเร่งด่วน (คะแนนเต็ม 100)',
+                        data: [92, 85, 78], // Simulated relative priority
+                        backgroundColor: [
+                            'rgba(99, 102, 241, 0.65)',
+                            'rgba(16, 185, 129, 0.65)',
+                            'rgba(245, 158, 11, 0.65)'
+                        ],
+                        borderColor: [
+                            '#6366f1',
+                            '#10b981',
+                            '#f59e0b'
+                        ],
+                        borderWidth: 1.5,
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    indexAxis: 'y', // Horizontal bars
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        x: {
+                            max: 100,
+                            grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                            ticks: { color: '#94a3b8', font: { family: 'Sarabun' } }
+                        },
+                        y: {
+                            grid: { display: false },
+                            ticks: { color: '#f8fafc', font: { family: 'Sarabun', size: 11 } }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Live Update Chart functions
+        function updateDemandChart(docDemand, nurseDemand) {
+            if (!demandLineChart) return;
+            demandLineChart.data.datasets[0].data = nurseDemand;
+            demandLineChart.data.datasets[1].data = docDemand;
+            demandLineChart.update();
+        }
+
+        function updateSpecialtyChart(specialties) {
+            if (!specialtyBarChart) return;
+            specialtyBarChart.data.labels = specialties;
+            specialtyBarChart.update();
+        }
+    </script>
+</body>
+</html>
+
+```
